@@ -1,16 +1,51 @@
 package com.prashanth291.quiz.quiz_application.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.prashanth291.quiz.quiz_application.model.Question;
+import com.prashanth291.quiz.quiz_application.service.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("question")
+@RequestMapping("questions")
 public class QuestionController {
+
+    @Autowired
+    private QuestionService serv;
+
     @GetMapping("/allQuestions")
-    public String getAllQuestions()
+    public List<Question> getAllQuestions()
     {
-        return "Hi Buddy! Nice to see your Presence!";
+        return serv.getAllQuestions();
+    }
+
+    @GetMapping("/question/{id}")
+    public ResponseEntity<Question> getQuestion(@PathVariable int id) {
+
+        return serv.getQuestion(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/add-question")
+    public Question addQuestion(@RequestBody Question ques)
+    {
+        return serv.addQuestion(ques);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteQuestion(@PathVariable int id)
+    {
+        serv.deleteQuestion(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public Question updateQueston(@RequestBody Question ques)
+    {
+        return serv.updateQuestion(ques);
     }
 }
