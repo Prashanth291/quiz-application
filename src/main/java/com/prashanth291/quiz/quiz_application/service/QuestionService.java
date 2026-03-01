@@ -3,8 +3,11 @@ package com.prashanth291.quiz.quiz_application.service;
 import com.prashanth291.quiz.quiz_application.model.Question;
 import com.prashanth291.quiz.quiz_application.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,28 +16,49 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository repo;
-    public List<Question> getAllQuestions()
+    public ResponseEntity<List<Question>> getAllQuestions()
     {
-        return repo.findAll();
+        try{
+            return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
     public Optional<Question> getQuestion(int id) {
         return repo.findById(id);
     }
 
-    public Question addQuestion(Question ques) {
-        return repo.save(ques);
+    public ResponseEntity<Question> addQuestion(Question ques) {
+        try{
+            return new ResponseEntity<>(repo.save(ques),HttpStatus.CREATED);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new Question(),HttpStatus.BAD_REQUEST);
     }
 
     public void deleteQuestion(int id) {
         repo.deleteById(id);
     }
 
-    public Question updateQuestion(Question ques) {
-        return repo.save(ques);
+    public ResponseEntity<Question> updateQuestion(Question ques) {
+        try{
+            return new ResponseEntity<>(repo.save(ques),HttpStatus.CREATED);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new Question(),HttpStatus.BAD_REQUEST);
     }
 
-    public List<Question> getQuestionsByCategory(String cat) { 
-        return repo.findAllByCategory(cat);
+    public ResponseEntity<List<Question>> getQuestionsByCategory(String cat) {
+        try{
+            return new ResponseEntity<>(repo.findAllByCategory(cat),HttpStatus.OK);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 }
